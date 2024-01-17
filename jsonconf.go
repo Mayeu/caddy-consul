@@ -190,9 +190,10 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 		} else if options.NoAutoHTTPSRedirect {
 			servers = append(servers, "http")
 		}
+		var hostnames string
 
 		if options.SubjectsOverride != "" {
-			hostnames := option.SubjectsOverride
+			hostnames := options.SubjectsOverride
 		} else {
 			// Let's define the host name for the service
 			name := instances[0].Service.Service

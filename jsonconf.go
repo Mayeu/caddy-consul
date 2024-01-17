@@ -193,7 +193,7 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 		var hostnames []string
 
 		if options.SubjectsOverride != "" {
-			hostnames := []string{options.SubjectsOverride}
+			hostnames = []string{options.SubjectsOverride}
 		} else {
 			// Let's define the host name for the service
 			name := instances[0].Service.Service
@@ -206,8 +206,7 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 			}
 
 			// We now have the hostname we want to use
-
-			hostnames := []string{fmt.Sprintf("%s.%s", name, zone)}
+			hostnames = []string{fmt.Sprintf("%s.%s", name, zone)}
 		}
 
 		// Let's prepare the TLS app part for this website

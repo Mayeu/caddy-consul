@@ -191,18 +191,23 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 			servers = append(servers, "http")
 		}
 
-		// Let's define the host name for the service
-		name := instances[0].Service.Service
-		zone := cc.AutoReverseProxy.DefaultHTTPServerOptions.Zone
-		if options.ServiceNameOverride != "" {
-			name = options.ServiceNameOverride
-		}
-		if options.ZoneOverride != "" {
-			zone = options.ZoneOverride
-		}
+		if options.SubjectsOverride != "" {
+			hostnames := option.SubjectsOverride
+		} else {
+			// Let's define the host name for the service
+			name := instances[0].Service.Service
+			zone := cc.AutoReverseProxy.DefaultHTTPServerOptions.Zone
+			if options.ServiceNameOverride != "" {
+				name = options.ServiceNameOverride
+			}
+			if options.ZoneOverride != "" {
+				zone = options.ZoneOverride
+			}
 
-		// We now have the hostname we want to use
-		hostnames := []string{fmt.Sprintf("%s.%s", name, zone)}
+			// We now have the hostname we want to use
+
+			hostnames := []string{fmt.Sprintf("%s.%s", name, zone)}
+		}
 
 		// Let's prepare the TLS app part for this website
 		tlsConf.Automation.Policies = append(tlsConf.Automation.Policies, &caddytls.AutomationPolicy{
@@ -240,26 +245,26 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 		// Now that we have everything, we add the route to our host on the relevant server (HTTP or HTTPS)
 		for _, server := range servers {
 			httpConf.Servers[server].Routes = append(httpConf.Servers[server].Routes,
-				caddyhttp.Route{
-					HandlersRaw: handlersRaw,
-					MatcherSetsRaw: caddyhttp.RawMatcherSets{
-						caddy.ModuleMap{
-							"host": caddyconfig.JSON(hostnames, nil),
-						},
+			caddyhttp.Route{
+				HandlersRaw: handlersRaw,
+				MatcherSetsRaw: caddyhttp.RawMatcherSets{
+					caddy.ModuleMap{
+						"host": caddyconfig.JSON(hostnames, nil),
 					},
-					Terminal: true,
 				},
-			)
-		}
-
+				Terminal: true,
+			},
+		)
 	}
 
-	// As we finished iterating on all Consul services, we generated both HTTP and TLS apps config,
-	// so we just need to push them to our config, and we're done!
-	conf.AppsRaw["http"] = caddyconfig.JSON(httpConf, nil)
-	conf.AppsRaw["tls"] = caddyconfig.JSON(tlsConf, nil)
+}
 
-	return
+// As we finished iterating on all Consul services, we generated both HTTP and TLS apps config,
+// so we just need to push them to our config, and we're done!
+conf.AppsRaw["http"] = caddyconfig.JSON(httpConf, nil)
+conf.AppsRaw["tls"] = caddyconfig.JSON(tlsConf, nil)
+
+return
 }
 
 // getAuthRoute generates the HTTPS entry for the caddy-auth-portal plugin.

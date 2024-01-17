@@ -91,6 +91,9 @@ type AuthenticationConfiguration struct {
 // SubdomainReverseProxyOptions describes the supported option tags
 // for Consul services.
 type SubdomainReverseProxyOptions struct {
+	// Subjects Override
+	SubjectsOverride string `caddy:"subject=(.*)"`
+
 	// ZoneOverride overrides DefaultHTTPServerOptions.Zone for the service
 	ZoneOverride string `caddy:"zone=(.*)"`
 

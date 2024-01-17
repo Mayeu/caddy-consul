@@ -206,7 +206,7 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 
 		// Let's prepare the TLS app part for this website
 		tlsConf.Automation.Policies = append(tlsConf.Automation.Policies, &caddytls.AutomationPolicy{
-			Subjects:   hostnames,
+			SubjectsRaw:   hostnames,
 			IssuersRaw: cc.AutoReverseProxy.TLSIssuers,
 		})
 

@@ -78,7 +78,6 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 					fmt.Sprintf(":%d", cc.AutoReverseProxy.DefaultHTTPServerOptions.HTTPSPort),
 				},
 				Routes:   caddyhttp.RouteList{cc.getAuthRoute()},
-				AllowH2C: true,
 			},
 		},
 	}

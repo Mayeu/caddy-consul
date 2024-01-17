@@ -90,12 +90,12 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 	}
 
 	// If the authentication is enabled, we need to handle the certificates for the authentication domain too
-	if cc.AutoReverseProxy.AuthenticationConfiguration.Enabled {
-		tlsConf.Automation.Policies = append(tlsConf.Automation.Policies, &caddytls.AutomationPolicy{
-			Subjects:   []string{cc.AutoReverseProxy.AuthenticationConfiguration.AuthenticationDomain},
-			IssuersRaw: cc.AutoReverseProxy.TLSIssuers,
-		})
-	}
+	//if cc.AutoReverseProxy.AuthenticationConfiguration.Enabled {
+	//	tlsConf.Automation.Policies = append(tlsConf.Automation.Policies, &caddytls.AutomationPolicy{
+	//		Subjects:   []string{cc.AutoReverseProxy.AuthenticationConfiguration.AuthenticationDomain},
+	//		IssuersRaw: cc.AutoReverseProxy.TLSIssuers,
+	//	})
+	//}
 
 	// We iterate on every Consul service
 	for _, instances := range services {
@@ -112,9 +112,9 @@ func (cc *App) generateHTTPAndTLSAppConfFromConsulServices(conf *caddy.Config) (
 		reverseProxyHandler := &reverseproxy.Handler{
 			Upstreams:       upstreams,
 			FlushInterval:   caddy.Duration(options.FlushInterval),
-			BufferRequests:  options.BufferRequests,
-			BufferResponses: options.BufferResponses,
-			MaxBufferSize:   int64(options.MaxBufferSize),
+			//BufferRequests:  options.BufferRequests,
+			//BufferResponses: options.BufferResponses,
+			//MaxBufferSize:   int64(options.MaxBufferSize),
 			Headers: &headers.Handler{
 				Request: &headers.HeaderOps{Add: http.Header{}},
 				Response: &headers.RespHeaderOps{
